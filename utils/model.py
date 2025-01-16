@@ -7,6 +7,11 @@ import numpy as np
 import hifigan
 from model import FastSpeech2, ScheduledOptim
 
+import nltk
+nltk.download('averaged_perceptron_tagger_eng')
+
+
+
 
 def get_model(args, configs, device, train=False):
     (preprocess_config, model_config, train_config) = configs
@@ -43,7 +48,9 @@ def get_param_num(model):
 
 def get_vocoder(config, device):
     name = config["vocoder"]["model"]
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: \n ", name)
     speaker = config["vocoder"]["speaker"]
+    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: \n ", speaker)
 
     if name == "MelGAN":
         if speaker == "LJSpeech":
@@ -62,7 +69,9 @@ def get_vocoder(config, device):
         config = hifigan.AttrDict(config)
         vocoder = hifigan.Generator(config)
         if speaker == "LJSpeech":
-            ckpt = torch.load("hifigan/generator_LJSpeech.pth.tar")
+            # ckpt = torch.load("hifigan/generator_LJSpeech.pth.tar")
+            ckpt = torch.load("hifigan/generator_LJSpeech.pth.tar", map_location=torch.device('cpu'))
+
         elif speaker == "universal":
             ckpt = torch.load("hifigan/generator_universal.pth.tar")
         vocoder.load_state_dict(ckpt["generator"])
